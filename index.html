@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .container
+    {
+        display: flex;
+        flex-direction: row;
+        margin: 0 40%;
+    }
+    #counter {
+        font-size: 2em; 
+        margin: 20px;
+    }
+    button {
+        font-size: 14px;
+        padding: 1px 35px;
+        background-color: rgb(64, 120, 241);
+        border-radius: 100%;
+        border: none;
+        color: white;
+    }
+</style>
+<body>
+    
+<div class="container">
+    <button id="decrease">-</button>
+    <p id="counter">0</p>
+    <button id="increase">+</button>
+</div>
+
+<script>
+    let count = 0;
+    const counterDisplay = document.querySelector('#counter');
+    document.querySelector('#increase').addEventListener('click', () => {
+        count++;
+        counterDisplay.textContent = count;
+    });
+    document.querySelector('#decrease').addEventListener('click', () => {
+        count--;
+        counterDisplay.textContent = count;
+    });
+</script>
+
+</body>
+</html>
