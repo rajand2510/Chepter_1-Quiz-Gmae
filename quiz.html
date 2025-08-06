@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .quiz-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    #options {
+      margin: 1rem 0;
+    }
+
+    .option-btn {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.6rem 1rem;
+      border: none;
+      background: #e0e0e0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .option-btn:hover {
+      background: #ccc;
+    }
+
+    #next-btn {
+      padding: 0.6rem 1rem;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #next-btn:hover {
+      background: #45a049;
+    }
+
+    #timer {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz Game</h1>
+    <div id="quiz-box">
+      <div id="question-box">
+        <div id="question">Loading...</div>
+        <div id="options"></div>
+        <div id="timer">Time left: <span id="time">10</span>s</div>
+      </div>
+    </div>
+    <button id="next-btn">Next</button>
+    <div id="score-box" class="hidden">
+      <h2>Quiz Completed!</h2>
+      <p>Your Score: <span id="score"></span></p>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        options: ["London", "Berlin", "Paris", "Madrid"],
+        answer: "Paris",
+      },
+      {
+        question: "Which is the largest ocean?",
+        options: ["Atlantic", "Arctic", "Indian", "Pacific"],
+        answer: "Pacific",
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Mars", "Jupiter", "Venus"],
+        answer: "Mars",
+      },
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let timer;
+    let timeLeft = 10;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const scoreBox = document.getElementById("score-box");
+    const scoreEl = document.getElementById("score");
+    const timeEl = document.getElementById("time");
+
+    function loadQuestion() {
+      clearInterval(timer);
+      timeLeft = 10;
+      timeEl.textContent = timeLeft;
+
+      const q = questions[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+
+      q.options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.classList.add("option-btn");
+        btn.textContent = opt;
+        btn.onclick = () => selectOption(opt);
+        optionsEl.appendChild(btn);
+      });
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          disableOptions();
+        }
+      }, 1000);
+    }
+
+    function selectOption(selected) {
+      clearInterval(timer);
+      const q = questions[currentQuestion];
+      const isCorrect = selected === q.answer;
+
+      if (isCorrect) {
+        // Score multiplier: more time left = more points
+        score += 10 + timeLeft;
+      }
+
+      disableOptions();
+    }
+
+    function disableOptions() {
+      const buttons = document.querySelectorAll(".option-btn");
+      buttons.forEach((btn) => {
+        btn.disabled = true;
+        if (btn.textContent === questions[currentQuestion].answer) {
+          btn.style.backgroundColor = "#4caf50"; // correct
+        } else {
+          btn.style.backgroundColor = "#f44336"; // incorrect
+        }
+      });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    });
+
+    function showScore() {
+      document.getElementById("question-box").classList.add("hidden");
+      nextBtn.classList.add("hidden");
+      scoreBox.classList.remove("hidden");
+      scoreEl.textContent = score;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
